@@ -1,477 +1,114 @@
 
-/* =================================
-   1. GLOBAL DESIGN
-================================= */
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* AUTHENTIFICATION */
+[hidden] {
+    display: none !important;
 }
 
-body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: #f1f5f9;
-    color: #263445;
-    line-height: 1.6;
+.auth-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    background: linear-gradient(135deg, #e8f3fa, #f5f8fc);
 }
 
-/* =================================
-   2. HEADER
-================================= */
-
-header {
-    background: linear-gradient(135deg, #123b5d, #167da8);
-    color: white;
-    text-align: center;
-    padding: 45px 20px;
-    box-shadow: 0 5px 20px rgba(18, 59, 93, 0.18);
-}
-
-header h1 {
-    font-size: 30px;
-    margin-bottom: 10px;
-    font-weight: 700;
-}
-
-header p {
-    font-size: 16px;
-    opacity: 0.9;
-}
-
-/* =================================
-   3. MAIN CONTAINER
-================================= */
-
-main {
-    max-width: 1100px;
-    margin: 35px auto;
-    padding: 30px;
+.auth-card {
+    width: 100%;
+    max-width: 430px;
+    padding: 35px;
     background: white;
     border-radius: 18px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 30px rgba(30, 70, 100, 0.12);
 }
 
-h2 {
-    color: #123b5d;
-    margin-bottom: 22px;
-    font-size: 24px;
-}
-
-h3 {
+.auth-card h1 {
     color: #17466b;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
-/* =================================
-   4. INPUT FORM
-================================= */
-
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+.auth-card > p {
+    text-align: center;
+    color: #64748b;
 }
 
-form h3 {
-    margin-top: 20px;
-    padding: 12px 15px;
-    background: #eaf4fa;
-    border-left: 5px solid #1689b5;
-    border-radius: 7px;
-    font-size: 18px;
-}
-
-label {
+.auth-card label {
+    display: block;
+    margin-top: 18px;
     font-weight: 600;
-    color: #34495e;
-    margin-top: 5px;
 }
 
-input {
+.auth-card input {
     width: 100%;
+    box-sizing: border-box;
     padding: 13px;
-    border: 1px solid #d3dce5;
-    border-radius: 8px;
-    font-size: 15px;
-    background: #fbfdff;
-    transition: 0.3s;
-}
-
-input:focus {
-    outline: none;
-    border-color: #1689b5;
-    box-shadow: 0 0 0 3px rgba(22, 137, 181, 0.12);
-}
-
-/* =================================
-   5. CALCULATE BUTTON
-================================= */
-
-button {
-    background: linear-gradient(135deg, #1689b5, #12658e);
-    color: white;
-    border: none;
-    padding: 15px;
+    margin-top: 8px;
+    border: 1px solid #d6e0e8;
     border-radius: 9px;
-    font-size: 17px;
+}
+
+.auth-card button {
+    width: 100%;
+    margin-top: 18px;
+    padding: 13px;
+    border: none;
+    border-radius: 9px;
+    background: #1689b5;
+    color: white;
     font-weight: bold;
     cursor: pointer;
-    margin-top: 22px;
-    transition: 0.3s;
 }
 
-button:hover {
-    background: linear-gradient(135deg, #12658e, #0e4c70);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(18, 101, 142, 0.2);
+.auth-card button:hover {
+    background: #126d91;
 }
 
-/* =================================
-   6. PROCESS SCHEMA
-================================= */
-
-.schema {
-    margin: 35px 0;
-    padding: 30px;
-    background: linear-gradient(135deg, #ffffff, #f0f7fc);
-    border: 1px solid #e0eaf2;
-    border-radius: 20px;
-    box-shadow: 0 8px 25px rgba(20, 65, 100, 0.08);
+.auth-card #registerBtn {
+    background: #17466b;
 }
 
-.schema h2 {
-    text-align: center;
-    color: #17466b;
-    font-size: 25px;
-    margin-bottom: 30px;
+.auth-card #authMessage {
+    color: #b42318;
+    margin-top: 15px;
+    overflow-wrap: anywhere;
 }
 
-/* Horizontal process flow */
-
-.schema .process-flow {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
+#logoutBtn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #17466b;
+    color: white;
+    cursor: pointer;
 }
 
-/* Process cards */
-
-.schema .process-box {
-    flex: 1 1 0;
-    min-width: 0;
-    min-height: 175px;
-    padding: 20px 8px;
-    text-align: center;
-    background: white;
-    border: 1px solid #dceaf4;
-    border-top: 5px solid #1689b5;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(20, 65, 100, 0.08);
-    transition: 0.3s ease;
+#saveSimulationBtn {
+    margin: 20px 0;
+    padding: 13px 22px;
+    border: none;
+    border-radius: 8px;
+    background: #1689b5;
+    color: white;
+    cursor: pointer;
 }
 
-.schema .process-box:hover {
-    transform: translateY(-7px);
-    box-shadow: 0 12px 22px rgba(20, 65, 100, 0.15);
+#saveSimulationBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
-/* Number circles */
-
-.schema .process-box span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    margin-bottom: 12px;
-    border-radius: 50%;
-    background: #e3f2fa;
-    color: #147db3;
-    font-weight: bold;
-    font-size: 15px;
-}
-
-/* Card titles */
-
-.schema .process-box h3 {
-    color: #17466b;
-    font-size: 14px;
-    margin: 8px 0;
-}
-
-/* Card descriptions */
-
-.schema .process-box p {
-    color: #647789;
-    font-size: 11px;
-    line-height: 1.5;
-}
-
-/* Arrows */
-
-.schema .arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 20px;
-    color: #1689b5;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-/* Different colors for operations */
-
-.schema .process-box:nth-child(1) {
-    border-top-color: #1689b5;
-}
-
-.schema .process-box:nth-child(3) {
-    border-top-color: #168a91;
-}
-
-.schema .process-box:nth-child(5) {
-    border-top-color: #d18a32;
-}
-
-.schema .process-box:nth-child(7) {
-    border-top-color: #8055b5;
-}
-
-.schema .process-box:nth-child(9) {
-    border-top-color: #31865b;
-}
-
-/* =================================
-   7. RESULTS SECTION
-================================= */
-
-#resultats {
-    margin-top: 35px;
+.history-section {
+    margin-top: 40px;
     padding: 25px;
-    background: #edf6fb;
-    border: 1px solid #dceaf4;
+    background: white;
     border-radius: 14px;
 }
 
-#resultats h2 {
-    color: #123b5d;
-    border-bottom: 2px solid #c8dfed;
-    padding-bottom: 12px;
-}
-
-#resultats h3 {
-    margin-top: 22px;
-    margin-bottom: 10px;
-    padding: 10px 12px;
-    background: white;
-    border-left: 4px solid #1689b5;
-    border-radius: 6px;
-}
-
-#resultats p {
-    padding: 7px 10px;
-    margin: 5px 0;
-    background: white;
-    border-radius: 6px;
-}
-
-/* =================================
-   8. RESPONSIVE DESIGN
-================================= */
-
-@media (max-width: 950px) {
-    main {
-        margin: 20px;
-    }
-
-    .schema .process-flow {
-        flex-wrap: wrap;
-    }
-
-    .schema .process-box {
-        flex: 1 1 28%;
-    }
-}
-
-@media (max-width: 600px) {
-    header h1 {
-        font-size: 23px;
-    }
-
-    main {
-        margin: 12px;
-        padding: 18px;
-    }
-
-    .schema {
-        padding: 18px;
-    }
-
-    .schema .process-flow {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .schema .process-box {
-        flex: 1 1 auto;
-        width: 100%;
-        min-height: 140px;
-    }
-
-    .schema .arrow {
-        transform: rotate(90deg);
-        min-height: 25px;
-    }
-}
-
-/* ===== FINAL PROCESS DESIGN ===== */
-
-.schema .process-flow {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-    gap: 12px;
-    overflow-x: auto;
-    padding: 15px 5px 25px;
-    width: 100%;
-}
-.schema .process-box {
-    flex: 0 0 155px !important;
-    width: 155px !important;
-    min-height: 185px;
-    padding: 20px 12px;
-    border-radius: 16px;
-    background: white;
-    box-shadow: 0 6px 18px rgba(20, 65, 100, 0.10);
-}
-
-.schema .process-box span {
-    width: 42px;
-    height: 42px;
-    background: #e3f2fa;
-    color: #147db3;
-    border-radius: 50%;
-}
-
-.schema .process-box h3 {
-    font-size: 15px;
-    margin: 12px 0;
-}
-
-.schema .process-box p {
-    font-size: 12px;
-    line-height: 1.6;
-}
-
-.schema .arrow {
-    display: flex !important;
-    flex: 0 0 22px !important;
-    align-items: center;
-    justify-content: center;
-    font-size: 25px;
-    color: #1689b5;
-    transform: none !important;
-}
-
-/* ===== GRAPHIQUE DE SIMULATION ===== */
-
-.graph-section {
-    margin-top: 40px;
-    padding: 30px;
-    background: linear-gradient(135deg, #ffffff, #f1f7fc);
-    border: 1px solid #dceaf4;
-    border-radius: 18px;
-    box-shadow: 0 8px 25px rgba(20, 65, 100, 0.08);
-}
-
-.graph-section h2 {
-    text-align: center;
+.history-section h2 {
     color: #17466b;
 }
 
-.graph-section h3 {
-    text-align: center;
-    font-size: 17px;
-    margin-bottom: 12px;
-}
-
-.graph-section p {
-    text-align: center;
-    color: #647789;
-    margin-bottom: 20px;
-}
-
-.chart-container {
-    width: 100%;
-    overflow-x: auto;
-    background: white;
-    padding: 15px;
-    border-radius: 12px;
-}
-
-.chart-container canvas {
-    display: block;
-    width: 100%;
-    min-width: 450px;
-    height: 350px;
-}
-
-/* ===== VERIFICATION DES BILANS ===== */
-
-.bilan-section {
-    margin-top: 40px;
-    padding: 30px;
-    background: linear-gradient(135deg, #ffffff, #f1f7fc);
-    border: 1px solid #dceaf4;
-    border-radius: 18px;
-    box-shadow: 0 8px 25px rgba(20, 65, 100, 0.08);
-}
-
-.bilan-section > h2 {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.bilan-card {
-    background: white;
-    padding: 22px;
-    margin-bottom: 18px;
-    border-radius: 13px;
-    border-left: 5px solid #1689b5;
-    box-shadow: 0 4px 12px rgba(20, 65, 100, 0.06);
-}
-
-.bilan-card h3 {
-    color: #17466b;
+#historyList .bilan-card {
     margin-bottom: 15px;
-}
-
-.bilan-card p {
-    margin: 9px 0;
-    color: #52677a;
-}
-
-.bilan-ok {
-    color: #218653 !important;
-    font-weight: bold;
-    background: #e8f7ee;
-    padding: 10px;
-    border-radius: 7px;
-}
-
-.bilan-error {
-    color: #c0392b !important;
-    font-weight: bold;
-    background: #fdecea;
-    padding: 10px;
-    border-radius: 7px;
-}
-
-.graph-card {
-    margin-top: 25px;
 }
