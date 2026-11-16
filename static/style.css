@@ -252,15 +252,23 @@ h3 {
 ================================ */
 
 .graph-section {
+    width: 100%;
     margin-top: 40px;
 }
 
 .graph-card {
+    width: 100%;
     background: white;
     padding: 25px;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    overflow: hidden;
+}
+
+.graph-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
 }
 
 .chart-container {
@@ -268,10 +276,13 @@ h3 {
     width: 100%;
     height: 350px;
     margin-top: 20px;
+    overflow: hidden;
 }
 
 .chart-container canvas {
-    max-width: 100%;
+    display: block;
+    width: 100% !important;
+    height: 350px !important;
 }
 
 /* ================================
@@ -400,6 +411,7 @@ h3 {
 ================================ */
 
 @media (max-width: 700px) {
+
     main {
         width: 94%;
     }
@@ -429,5 +441,9 @@ h3 {
 
     .chart-container {
         height: 280px;
+    }
+
+    .chart-container canvas {
+        height: 280px !important;
     }
 }
