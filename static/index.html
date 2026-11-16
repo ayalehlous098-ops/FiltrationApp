@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProcessLab - Simulation du procédé</title>
-    <link rel="stylesheet" href="./style.css?v=7">
+    <link rel="stylesheet" href="./style.css?v=8">
 </head>
 <body>
 
@@ -42,6 +42,7 @@
 
 <main>
 
+    <!-- SCHEMA DU PROCEDE -->
     <section class="schema">
         <h2>Schéma du procédé</h2>
 
@@ -51,6 +52,7 @@
                 <h3>Filtration</h3>
                 <p>Élimination des particules insolubles</p>
             </div>
+
             <div class="arrow">➜</div>
 
             <div class="process-box">
@@ -58,6 +60,7 @@
                 <h3>Mélange</h3>
                 <p>Ajout du jus concentré</p>
             </div>
+
             <div class="arrow">➜</div>
 
             <div class="process-box">
@@ -65,6 +68,7 @@
                 <h3>Chauffage</h3>
                 <p>Élévation de la température</p>
             </div>
+
             <div class="arrow">➜</div>
 
             <div class="process-box">
@@ -72,6 +76,7 @@
                 <h3>Évaporation</h3>
                 <p>Élimination d'une partie de l'eau</p>
             </div>
+
             <div class="arrow">➜</div>
 
             <div class="process-box">
@@ -82,11 +87,13 @@
         </div>
     </section>
 
+    <!-- PARAMETRES -->
     <h2>Paramètres du procédé</h2>
 
     <form id="filtrationForm">
 
         <h3>1. Filtration</h3>
+
         <label>Débit initial (kg/h)</label>
         <input type="number" id="m0" value="1000" step="any" required>
 
@@ -97,6 +104,7 @@
         <input type="number" id="residus" value="20" step="any" required>
 
         <h3>2. Mélange</h3>
+
         <label>Débit ajouté (kg/h)</label>
         <input type="number" id="mR" value="100" step="any" required>
 
@@ -104,6 +112,7 @@
         <input type="number" id="xR" value="40" step="any" required>
 
         <h3>3. Chauffage</h3>
+
         <label>Température d'entrée (°C)</label>
         <input type="number" id="T2" value="20" step="any" required>
 
@@ -114,6 +123,7 @@
         <input type="number" id="Cp" value="3.8" step="any" required>
 
         <h3>4. Évaporation</h3>
+
         <label>Concentration finale souhaitée (%)</label>
         <input type="number" id="x4" value="40" step="any" required>
 
@@ -121,6 +131,7 @@
         <input type="number" id="lambda_v" value="2300" step="any" required>
 
         <h3>5. Refroidissement</h3>
+
         <label>Température après évaporation (°C)</label>
         <input type="number" id="T4" value="80" step="any" required>
 
@@ -130,42 +141,68 @@
         <button type="submit">Calculer le procédé</button>
     </form>
 
+    <!-- RESULTATS -->
     <section id="resultats">
         <h2>Résultats de simulation</h2>
         <p>Les résultats apparaîtront ici après le calcul.</p>
     </section>
 
+    <!-- SAUVEGARDE -->
     <button type="button" id="saveSimulationBtn">
         Enregistrer la simulation
     </button>
+
     <p id="saveMessage"></p>
 
+    <!-- BILANS -->
     <section class="bilan-section">
         <h2>Vérification des bilans de matière</h2>
 
         <div class="bilan-card">
             <h3>1. Bilan massique global</h3>
-            <p>Entrées totales : <strong id="entreesTotales">--</strong></p>
-            <p>Sorties totales : <strong id="sortiesTotales">--</strong></p>
-            <p>Écart massique : <strong id="ecartMassique">--</strong></p>
+
+            <p>Entrées totales :
+                <strong id="entreesTotales">--</strong>
+            </p>
+
+            <p>Sorties totales :
+                <strong id="sortiesTotales">--</strong>
+            </p>
+
+            <p>Écart massique :
+                <strong id="ecartMassique">--</strong>
+            </p>
+
             <p id="statutMassique">En attente du calcul</p>
         </div>
 
         <div class="bilan-card">
             <h3>2. Bilan de matière soluble</h3>
-            <p>Matière soluble entrante : <strong id="solubleEntrante">--</strong></p>
-            <p>Matière soluble sortante : <strong id="solubleSortante">--</strong></p>
-            <p>Écart de matière soluble : <strong id="ecartSoluble">--</strong></p>
+
+            <p>Matière soluble entrante :
+                <strong id="solubleEntrante">--</strong>
+            </p>
+
+            <p>Matière soluble sortante :
+                <strong id="solubleSortante">--</strong>
+            </p>
+
+            <p>Écart de matière soluble :
+                <strong id="ecartSoluble">--</strong>
+            </p>
+
             <p id="statutSoluble">En attente du calcul</p>
         </div>
     </section>
 
+    <!-- GRAPHIQUES -->
     <section class="graph-section">
         <h2>Graphiques de simulation</h2>
 
         <div class="graph-card">
             <h3>1. Débit d'eau évaporée en fonction de la concentration finale</h3>
             <p>Influence de la concentration finale sur le débit d'eau évaporée.</p>
+
             <div class="chart-container">
                 <canvas id="graphiqueEvaporation"></canvas>
             </div>
@@ -174,6 +211,7 @@
         <div class="graph-card">
             <h3>2. Puissance de chauffage en fonction de T3</h3>
             <p>Influence de la température sur la puissance thermique.</p>
+
             <div class="chart-container">
                 <canvas id="graphiqueChauffage"></canvas>
             </div>
@@ -183,6 +221,7 @@
     <!-- HISTORIQUE -->
     <section class="history-section">
         <h2>Historique de mes simulations</h2>
+
         <div id="historyList">
             <p>Chargement de l'historique...</p>
         </div>
