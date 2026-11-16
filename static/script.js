@@ -129,7 +129,6 @@ onAuthStateChanged(auth, async function(user) {
 
 // Déconnexion
 document.getElementById("logoutBtn").addEventListener("click", async function() {
-
     await signOut(auth);
 });
 
@@ -529,26 +528,30 @@ async function chargerHistorique(user) {
 function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
 
     const canvas = document.getElementById(id);
+    if (!canvas || !valeurs.length) return;
 
-    if (!canvas || valeurs.length === 0) return;
-
-    const ctx = canvas.getContext("2d");
-
-    const largeur = canvas.clientWidth || 800;
+    const container = canvas.parentElement;
+    const largeur = Math.max(container.clientWidth, 320);
     const hauteur = 350;
     const ratio = window.devicePixelRatio || 1;
+
+    canvas.style.display = "block";
+    canvas.style.width = "100%";
+    canvas.style.height = hauteur + "px";
 
     canvas.width = largeur * ratio;
     canvas.height = hauteur * ratio;
 
+    const ctx = canvas.getContext("2d");
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 
-    const gauche = 65;
-    const droite = 20;
-    const haut = 25;
-    const bas = 60;
+    const gauche = 85;
+    const droite = 30;
+    const haut = 30;
+    const bas = 85;
 
     const largeurZone = largeur - gauche - droite;
+    const hauteurZone = hauteur - haut - bas;
 
     let minY = Math.min(...valeurs);
     let maxY = Math.max(...valeurs);
@@ -558,25 +561,27 @@ function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
         minY -= 1;
     }
 
-    const marge = (maxY - minY) * 0.12;
+    const marge = (maxY - minY) * 0.15;
 
     minY = Math.max(0, minY - marge);
     maxY += marge;
 
     const x = i =>
-        gauche + (i / (etiquettes.length - 1)) * largeurZone;
+        gauche + (i / Math.max(1, etiquettes.length - 1)) * largeurZone;
 
     const y = v =>
         hauteur - bas -
-        ((v - minY) / (maxY - minY)) * (hauteur - haut - bas);
+        ((v - minY) / (maxY - minY)) * hauteurZone;
 
     ctx.clearRect(0, 0, largeur, hauteur);
 
-    // Grille
+    // GRILLE ET VALEURS VERTICALES
     ctx.font = "12px Arial";
     ctx.textAlign = "right";
+    ctx.textBaseline = "middle";
     ctx.fillStyle = "#52677a";
     ctx.strokeStyle = "#e2eaf0";
+    ctx.lineWidth = 1;
 
     for (let i = 0; i <= 5; i++) {
 
@@ -588,10 +593,10 @@ function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
         ctx.lineTo(largeur - droite, py);
         ctx.stroke();
 
-        ctx.fillText(valeur.toFixed(1), gauche - 10, py + 4);
+        ctx.fillText(valeur.toFixed(1), gauche - 12, py);
     }
 
-    // Axes
+    // AXES
     ctx.strokeStyle = "#52677a";
     ctx.lineWidth = 2;
 
@@ -601,11 +606,12 @@ function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
     ctx.lineTo(largeur - droite, hauteur - bas);
     ctx.stroke();
 
-    // Courbe
+    // COURBE
+    ctx.beginPath();
     ctx.strokeStyle = "#1689b5";
     ctx.lineWidth = 3;
-
-    ctx.beginPath();
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
 
     valeurs.forEach((v, i) => {
 
@@ -618,7 +624,7 @@ function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
 
     ctx.stroke();
 
-    // Points
+    // POINTS ET VALEURS
     valeurs.forEach((v, i) => {
 
         ctx.beginPath();
@@ -627,20 +633,40 @@ function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
         ctx.fillStyle = "#1689b5";
         ctx.fill();
 
+        ctx.font = "12px Arial";
         ctx.textAlign = "center";
-        ctx.font = "11px Arial";
+        ctx.textBaseline = "bottom";
         ctx.fillStyle = "#263445";
 
-        ctx.fillText(v.toFixed(1), x(i), y(v) - 10);
-
-        ctx.fillStyle = "#52677a";
-        ctx.fillText(etiquettes[i], x(i), hauteur - bas + 20);
+        ctx.fillText(v.toFixed(1), x(i), y(v) - 8);
     });
 
-    // Titres
-    ctx.fillStyle = "#17466b";
-    ctx.font = "bold 12px Arial";
+    // ETIQUETTES HORIZONTALES
+    ctx.font = "12px Arial";
+    ctx.fillStyle = "#52677a";
     ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+
+    const intervalle = Math.max(
+        1,
+        Math.ceil(
+            etiquettes.length /
+            Math.max(2, Math.floor(largeurZone / 65))
+        )
+    );
+
+    etiquettes.forEach((label, i) => {
+
+        if (i % intervalle === 0 || i === etiquettes.length - 1) {
+            ctx.fillText(label, x(i), hauteur - bas + 12);
+        }
+    });
+
+    // TITRE HORIZONTAL
+    ctx.font = "bold 13px Arial";
+    ctx.fillStyle = "#17466b";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "bottom";
 
     ctx.fillText(
         titreX,
@@ -648,10 +674,16 @@ function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
         hauteur - 5
     );
 
+    // TITRE VERTICAL
     ctx.save();
 
-    ctx.translate(16, haut + (hauteur - haut - bas) / 2);
+    ctx.translate(18, haut + hauteurZone / 2);
     ctx.rotate(-Math.PI / 2);
+
+    ctx.font = "bold 13px Arial";
+    ctx.fillStyle = "#17466b";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
     ctx.fillText(titreY, 0, 0);
 
