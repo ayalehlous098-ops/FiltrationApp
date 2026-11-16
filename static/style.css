@@ -1,8 +1,330 @@
 
-/* AUTHENTIFICATION */
+/* ================================
+   STYLE GENERAL - PROCESSLAB
+================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f2f6fa;
+    color: #263746;
+    line-height: 1.6;
+}
+
 [hidden] {
     display: none !important;
 }
+
+header {
+    background: linear-gradient(135deg, #17466b, #1689b5);
+    color: white;
+    text-align: center;
+    padding: 35px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 34px;
+}
+
+header p {
+    margin: 8px 0;
+}
+
+#userEmail {
+    font-weight: 600;
+}
+
+#logoutBtn {
+    margin-top: 12px;
+    padding: 11px 22px;
+    border: none;
+    border-radius: 8px;
+    background: white;
+    color: #17466b;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#logoutBtn:hover {
+    background: #e6f2f8;
+}
+
+main {
+    width: 92%;
+    max-width: 1150px;
+    margin: 35px auto;
+}
+
+h2 {
+    color: #17466b;
+    margin-bottom: 20px;
+}
+
+h3 {
+    color: #1689b5;
+}
+
+/* ================================
+   SCHEMA DU PROCEDE
+================================ */
+
+.schema {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    margin-bottom: 35px;
+}
+
+.process-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.process-box {
+    flex: 1;
+    min-width: 150px;
+    padding: 20px 12px;
+    text-align: center;
+    background: #eaf5fb;
+    border: 1px solid #cce5f2;
+    border-radius: 12px;
+}
+
+.process-box span {
+    display: inline-block;
+    background: #1689b5;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.process-box h3 {
+    margin: 12px 0 5px;
+}
+
+.process-box p {
+    font-size: 14px;
+    margin: 0;
+}
+
+.arrow {
+    color: #1689b5;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+/* ================================
+   FORMULAIRE
+================================ */
+
+#filtrationForm {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    margin-bottom: 35px;
+}
+
+#filtrationForm h3 {
+    margin-top: 25px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e5f0f6;
+}
+
+#filtrationForm label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+    color: #34495e;
+}
+
+#filtrationForm input {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 7px;
+    border: 1px solid #ccd8e2;
+    border-radius: 8px;
+    font-size: 15px;
+    background: #fbfdff;
+}
+
+#filtrationForm input:focus {
+    outline: none;
+    border-color: #1689b5;
+    box-shadow: 0 0 0 3px rgba(22,137,181,0.12);
+}
+
+#filtrationForm button {
+    display: block;
+    width: 100%;
+    margin-top: 30px;
+    padding: 15px;
+    border: none;
+    border-radius: 9px;
+    background: #1689b5;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#filtrationForm button:hover {
+    background: #126d91;
+}
+
+/* ================================
+   RESULTATS
+================================ */
+
+#resultats {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    margin-bottom: 30px;
+    overflow-x: auto;
+}
+
+#resultats table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+#resultats th,
+#resultats td {
+    padding: 12px;
+    border: 1px solid #dce6ed;
+    text-align: center;
+}
+
+#resultats th {
+    background: #17466b;
+    color: white;
+}
+
+#resultats tr:nth-child(even) {
+    background: #f0f6fa;
+}
+
+/* ================================
+   BILANS MATIERE
+================================ */
+
+.bilan-section {
+    margin-top: 35px;
+}
+
+.bilan-card {
+    background: white;
+    padding: 22px;
+    margin-bottom: 20px;
+    border-radius: 13px;
+    border-left: 5px solid #1689b5;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+
+.bilan-card p {
+    padding: 7px 0;
+    border-bottom: 1px solid #edf1f4;
+}
+
+#statutMassique,
+#statutSoluble {
+    font-weight: bold;
+}
+
+/* ================================
+   GRAPHIQUES
+================================ */
+
+.graph-section {
+    margin-top: 40px;
+}
+
+.graph-card {
+    background: white;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    margin-top: 20px;
+}
+
+.chart-container canvas {
+    max-width: 100%;
+}
+
+/* ================================
+   ENREGISTREMENT
+================================ */
+
+#saveSimulationBtn {
+    margin: 20px 0;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 9px;
+    background: #1689b5;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#saveSimulationBtn:hover {
+    background: #126d91;
+}
+
+#saveSimulationBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#saveMessage {
+    font-weight: 600;
+}
+
+/* ================================
+   HISTORIQUE
+================================ */
+
+.history-section {
+    margin-top: 40px;
+    padding: 25px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+
+.history-section h2 {
+    color: #17466b;
+}
+
+#historyList .bilan-card {
+    margin-bottom: 15px;
+}
+
+/* ================================
+   AUTHENTIFICATION
+================================ */
 
 .auth-section {
     min-height: 100vh;
@@ -15,11 +337,11 @@
 
 .auth-card {
     width: 100%;
-    max-width: 430px;
+    max-width: 500px;
     padding: 35px;
     background: white;
     border-radius: 18px;
-    box-shadow: 0 8px 30px rgba(30, 70, 100, 0.12);
+    box-shadow: 0 8px 30px rgba(30,70,100,0.12);
 }
 
 .auth-card h1 {
@@ -41,7 +363,6 @@
 
 .auth-card input {
     width: 100%;
-    box-sizing: border-box;
     padding: 13px;
     margin-top: 8px;
     border: 1px solid #d6e0e8;
@@ -74,41 +395,39 @@
     overflow-wrap: anywhere;
 }
 
-#logoutBtn {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 8px;
-    background: #17466b;
-    color: white;
-    cursor: pointer;
-}
+/* ================================
+   RESPONSIVE
+================================ */
 
-#saveSimulationBtn {
-    margin: 20px 0;
-    padding: 13px 22px;
-    border: none;
-    border-radius: 8px;
-    background: #1689b5;
-    color: white;
-    cursor: pointer;
-}
+@media (max-width: 700px) {
+    main {
+        width: 94%;
+    }
 
-#saveSimulationBtn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
+    header h1 {
+        font-size: 27px;
+    }
 
-.history-section {
-    margin-top: 40px;
-    padding: 25px;
-    background: white;
-    border-radius: 14px;
-}
+    .process-flow {
+        flex-direction: column;
+    }
 
-.history-section h2 {
-    color: #17466b;
-}
+    .process-box {
+        width: 100%;
+    }
 
-#historyList .bilan-card {
-    margin-bottom: 15px;
+    .arrow {
+        transform: rotate(90deg);
+    }
+
+    #filtrationForm,
+    .schema,
+    .graph-card,
+    .history-section {
+        padding: 18px;
+    }
+
+    .chart-container {
+        height: 280px;
+    }
 }
