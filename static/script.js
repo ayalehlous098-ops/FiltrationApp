@@ -1,10 +1,156 @@
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
+
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
+
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    query,
+    where,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
+
+
+// =====================================
+// 1. CONFIGURATION FIREBASE
+// =====================================
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBFWWoat9tUmq42mW5NWNwjIFKYPeRFD10",
+    authDomain: "filtrationapp.firebaseapp.com",
+    projectId: "filtrationapp",
+    storageBucket: "filtrationapp.firebasestorage.app",
+    messagingSenderId: "825817054978",
+    appId: "1:825817054978:web:131018c59aa1dd55544c1b"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+
+// =====================================
+// 2. AUTHENTIFICATION
+// =====================================
+
+const authForm = document.getElementById("authForm");
+const registerBtn = document.getElementById("registerBtn");
+const authMessage = document.getElementById("authMessage");
+
+authForm.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    authMessage.textContent = "Connexion en cours...";
+
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        authMessage.textContent = "";
+
+    } catch (error) {
+        authMessage.textContent = messageErreur(error);
+    }
+});
+
+
+// Créer un compte
+registerBtn.addEventListener("click", async function() {
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!email || password.length < 6) {
+        authMessage.textContent =
+            "Entrez un e-mail valide et un mot de passe de 6 caractères minimum.";
+        return;
+    }
+
+    authMessage.textContent = "Création du compte...";
+
+    try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        authMessage.textContent = "";
+
+    } catch (error) {
+        authMessage.textContent = messageErreur(error);
+    }
+});
+
+
+// Messages d'erreur
+function messageErreur(error) {
+
+    const messages = {
+        "auth/email-already-in-use": "Cette adresse e-mail possède déjà un compte.",
+        "auth/invalid-email": "Adresse e-mail invalide.",
+        "auth/weak-password": "Le mot de passe doit contenir au moins 6 caractères.",
+        "auth/invalid-credential": "E-mail ou mot de passe incorrect.",
+        "auth/network-request-failed": "Problème de connexion Internet."
+    };
+
+    return messages[error.code] || "Erreur : " + error.message;
+}
+
+
+// Vérifier l'utilisateur connecté
+onAuthStateChanged(auth, async function(user) {
+
+    const authSection = document.getElementById("authSection");
+    const appContent = document.getElementById("appContent");
+
+    if (user) {
+
+        authSection.hidden = true;
+        appContent.hidden = false;
+
+        document.getElementById("userEmail").textContent =
+            "Connecté : " + user.email;
+
+        await chargerHistorique(user);
+
+    } else {
+
+        authSection.hidden = false;
+        appContent.hidden = true;
+    }
+});
+
+
+// Déconnexion
+document.getElementById("logoutBtn").addEventListener("click", async function() {
+
+    await signOut(auth);
+});
+
+
+// =====================================
+// 3. VARIABLES DE SIMULATION
+// =====================================
+
+let derniereSimulation = null;
+
+
+// =====================================
+// 4. CALCUL DES CINQ OPERATIONS
+// =====================================
+
 const form = document.getElementById("filtrationForm");
 
 form.addEventListener("submit", function(event) {
+
     event.preventDefault();
 
-    // Récupération des données
     const d = {
         m0: Number(document.getElementById("m0").value),
         x0: Number(document.getElementById("x0").value),
@@ -21,7 +167,7 @@ form.addEventListener("submit", function(event) {
     };
 
     try {
-        // Vérification des données
+
         if (Object.values(d).some(v => !Number.isFinite(v))) {
             throw new Error("Veuillez remplir correctement tous les champs.");
         }
@@ -39,11 +185,11 @@ form.addEventListener("submit", function(event) {
             d.xR < 0 || d.xR > 100 ||
             d.x4 <= 0 || d.x4 > 100
         ) {
-            throw new Error("Les concentrations doivent être comprises entre 0 et 100 %.");
+            throw new Error("Les concentrations sont invalides.");
         }
 
         if (d.Cp <= 0 || d.lambda_v <= 0) {
-            throw new Error("Les propriétés thermiques doivent être positives.");
+            throw new Error("Les propriétés thermiques sont invalides.");
         }
 
         if (d.T3 < d.T2 || d.T4 < d.T5) {
@@ -54,16 +200,18 @@ form.addEventListener("submit", function(event) {
         const m1 = d.m0 - d.residus;
         const x1 = (d.m0 * d.x0) / m1;
 
-        // 2. MÉLANGE
+        // 2. MELANGE
         const m2 = m1 + d.mR;
         const x2 = (m1 * x1 + d.mR * d.xR) / m2;
 
         // 3. CHAUFFAGE
         const Q3 = (m2 * d.Cp * (d.T3 - d.T2)) / 3600;
 
-        // 4. ÉVAPORATION
+        // 4. EVAPORATION
         if (d.x4 < x2) {
-            throw new Error("La concentration finale doit être supérieure ou égale à celle après mélange.");
+            throw new Error(
+                "La concentration finale doit être supérieure ou égale à celle après mélange."
+            );
         }
 
         const m4 = (m2 * x2) / d.x4;
@@ -72,6 +220,7 @@ form.addEventListener("submit", function(event) {
 
         // 5. REFROIDISSEMENT
         const Q5 = (m4 * d.Cp * (d.T4 - d.T5)) / 3600;
+
 
         // Affichage des résultats
         document.getElementById("resultats").innerHTML = `
@@ -97,6 +246,7 @@ form.addEventListener("submit", function(event) {
             <p>Puissance de refroidissement : <strong>${Q5.toFixed(2)} kW</strong></p>
         `;
 
+
         // BILAN MASSIQUE GLOBAL
         const entrees = d.m0 + d.mR;
         const sorties = d.residus + mv + m4;
@@ -119,7 +269,8 @@ form.addEventListener("submit", function(event) {
         document.getElementById("statutMassique").className =
             ecartM < 0.01 ? "bilan-ok" : "bilan-error";
 
-        // BILAN DE MATIÈRE SOLUBLE
+
+        // BILAN DE MATIERE SOLUBLE
         const solubleEntree =
             (d.m0 * d.x0 / 100) + (d.mR * d.xR / 100);
 
@@ -144,11 +295,13 @@ form.addEventListener("submit", function(event) {
         document.getElementById("statutSoluble").className =
             ecartS < 0.01 ? "bilan-ok" : "bilan-error";
 
-        // GRAPHIQUE 1 : DÉBIT D'EAU ÉVAPORÉE
+
+        // GRAPHIQUE 1
         const concentrations = [];
         const debitsEvapores = [];
 
         for (let c = 40; c <= 50; c++) {
+
             const debitConcentre = (m2 * x2) / c;
             const debitEvapore = m2 - debitConcentre;
 
@@ -164,11 +317,13 @@ form.addEventListener("submit", function(event) {
             "Débit d'eau évaporée (kg/h)"
         );
 
-        // GRAPHIQUE 2 : PUISSANCE DE CHAUFFAGE
+
+        // GRAPHIQUE 2
         const temperatures = [];
         const puissances = [];
 
         for (let T = 60; T <= 100; T += 5) {
+
             const Q = (m2 * d.Cp * (T - d.T2)) / 3600;
 
             temperatures.push(T + " °C");
@@ -183,19 +338,194 @@ form.addEventListener("submit", function(event) {
             "Puissance de chauffage (kW)"
         );
 
-        // Afficher les résultats
+
+        // Sauvegarder les résultats en mémoire
+        derniereSimulation = {
+            parametres: d,
+            resultats: {
+                m1, x1, m2, x2, Q3, m4, mv, Q4, Q5
+            }
+        };
+
+        document.getElementById("saveMessage").textContent =
+            "Simulation calculée. Vous pouvez maintenant l'enregistrer.";
+
+        document.getElementById("saveSimulationBtn").disabled = false;
+
         document.getElementById("resultats").scrollIntoView({
             behavior: "smooth",
             block: "start"
         });
 
     } catch (error) {
+
         alert(error.message);
     }
 });
 
 
-// FONCTION DE DESSIN DES GRAPHIQUES
+// =====================================
+// 5. ENREGISTRER DANS FIRESTORE
+// =====================================
+
+const saveButton = document.getElementById("saveSimulationBtn");
+
+saveButton.disabled = true;
+
+saveButton.addEventListener("click", async function() {
+
+    const user = auth.currentUser;
+
+    if (!user) {
+        alert("Veuillez vous connecter.");
+        return;
+    }
+
+    if (!derniereSimulation) {
+        alert("Veuillez d'abord calculer une simulation.");
+        return;
+    }
+
+    const saveMessage = document.getElementById("saveMessage");
+
+    saveButton.disabled = true;
+    saveMessage.textContent = "Enregistrement en cours...";
+
+    try {
+
+        await addDoc(collection(db, "simulations"), {
+
+            userId: user.uid,
+            email: user.email,
+
+            parametres: derniereSimulation.parametres,
+            resultats: derniereSimulation.resultats,
+
+            createdAt: serverTimestamp()
+        });
+
+        saveMessage.textContent = "✓ Simulation enregistrée avec succès.";
+
+        await chargerHistorique(user);
+
+    } catch (error) {
+
+        console.error(error);
+
+        saveMessage.textContent =
+            "Erreur lors de l'enregistrement : " + error.message;
+
+    } finally {
+
+        saveButton.disabled = false;
+    }
+});
+
+
+// =====================================
+// 6. HISTORIQUE DES SIMULATIONS
+// =====================================
+
+async function chargerHistorique(user) {
+
+    const historyList = document.getElementById("historyList");
+
+    historyList.textContent = "Chargement de l'historique...";
+
+    try {
+
+        const simulationsRef = collection(db, "simulations");
+
+        // Chaque utilisateur récupère uniquement ses documents
+        const q = query(
+            simulationsRef,
+            where("userId", "==", user.uid)
+        );
+
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+
+            historyList.textContent =
+                "Vous n'avez pas encore enregistré de simulation.";
+
+            return;
+        }
+
+        const documents = [];
+
+        snapshot.forEach(function(doc) {
+            documents.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+
+        // Trier les simulations par date
+        documents.sort((a, b) => {
+            const dateA = a.createdAt?.toMillis?.() || 0;
+            const dateB = b.createdAt?.toMillis?.() || 0;
+            return dateB - dateA;
+        });
+
+        historyList.innerHTML = "";
+
+        documents.forEach(function(simulation, index) {
+
+            const date = simulation.createdAt
+                ? simulation.createdAt.toDate().toLocaleString("fr-FR")
+                : "Date indisponible";
+
+            const card = document.createElement("div");
+
+            card.className = "bilan-card";
+
+            const title = document.createElement("h3");
+            title.textContent = "Simulation " + (index + 1);
+
+            const dateText = document.createElement("p");
+            dateText.textContent = "Date : " + date;
+
+            const debitText = document.createElement("p");
+            debitText.textContent =
+                "Débit final : " +
+                simulation.resultats.m4.toFixed(2) + " kg/h";
+
+            const evaporationText = document.createElement("p");
+            evaporationText.textContent =
+                "Eau évaporée : " +
+                simulation.resultats.mv.toFixed(2) + " kg/h";
+
+            const concentrationText = document.createElement("p");
+            concentrationText.textContent =
+                "Concentration finale : " +
+                simulation.parametres.x4 + " %";
+
+            card.append(
+                title,
+                dateText,
+                debitText,
+                evaporationText,
+                concentrationText
+            );
+
+            historyList.appendChild(card);
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        historyList.textContent =
+            "Impossible de charger l'historique : " + error.message;
+    }
+}
+
+
+// =====================================
+// 7. DESSIN DES GRAPHIQUES
+// =====================================
+
 function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
 
     const canvas = document.getElementById(id);
@@ -219,7 +549,6 @@ function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
     const bas = 60;
 
     const largeurZone = largeur - gauche - droite;
-    const hauteurZone = hauteur - haut - bas;
 
     let minY = Math.min(...valeurs);
     let maxY = Math.max(...valeurs);
@@ -230,6 +559,7 @@ function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
     }
 
     const marge = (maxY - minY) * 0.12;
+
     minY = Math.max(0, minY - marge);
     maxY += marge;
 
@@ -237,7 +567,8 @@ function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
         gauche + (i / (etiquettes.length - 1)) * largeurZone;
 
     const y = v =>
-        hauteur - bas - ((v - minY) / (maxY - minY)) * hauteurZone;
+        hauteur - bas -
+        ((v - minY) / (maxY - minY)) * (hauteur - haut - bas);
 
     ctx.clearRect(0, 0, largeur, hauteur);
 
@@ -246,9 +577,9 @@ function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
     ctx.textAlign = "right";
     ctx.fillStyle = "#52677a";
     ctx.strokeStyle = "#e2eaf0";
-    ctx.lineWidth = 1;
 
     for (let i = 0; i <= 5; i++) {
+
         const valeur = minY + (maxY - minY) * i / 5;
         const py = y(valeur);
 
@@ -273,9 +604,11 @@ function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
     // Courbe
     ctx.strokeStyle = "#1689b5";
     ctx.lineWidth = 3;
+
     ctx.beginPath();
 
     valeurs.forEach((v, i) => {
+
         if (i === 0) {
             ctx.moveTo(x(i), y(v));
         } else {
@@ -285,26 +618,30 @@ function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
 
     ctx.stroke();
 
-    // Points et étiquettes
+    // Points
     valeurs.forEach((v, i) => {
+
         ctx.beginPath();
         ctx.arc(x(i), y(v), 4, 0, Math.PI * 2);
+
         ctx.fillStyle = "#1689b5";
         ctx.fill();
 
         ctx.textAlign = "center";
         ctx.font = "11px Arial";
         ctx.fillStyle = "#263445";
+
         ctx.fillText(v.toFixed(1), x(i), y(v) - 10);
 
         ctx.fillStyle = "#52677a";
         ctx.fillText(etiquettes[i], x(i), hauteur - bas + 20);
     });
 
-    // Titres des axes
+    // Titres
     ctx.fillStyle = "#17466b";
     ctx.font = "bold 12px Arial";
     ctx.textAlign = "center";
+
     ctx.fillText(
         titreX,
         gauche + largeurZone / 2,
@@ -312,8 +649,11 @@ function dessinerGraphique(id, etiquettes, valeurs, titreX, titreY) {
     );
 
     ctx.save();
-    ctx.translate(16, haut + hauteurZone / 2);
+
+    ctx.translate(16, haut + (hauteur - haut - bas) / 2);
     ctx.rotate(-Math.PI / 2);
+
     ctx.fillText(titreY, 0, 0);
+
     ctx.restore();
 }
