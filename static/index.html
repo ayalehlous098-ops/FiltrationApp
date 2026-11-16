@@ -4,14 +4,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulation du procédé de concentration du jus</title>
-    <link rel="stylesheet" href="./style.css?v=6">
+    <title>ProcessLab - Simulation du procédé</title>
+    <link rel="stylesheet" href="./style.css?v=7">
 </head>
 <body>
 
+<!-- AUTHENTIFICATION -->
+<section id="authSection" class="auth-section">
+    <div class="auth-card">
+        <h1>Bienvenue sur ProcessLab</h1>
+        <p>Connectez-vous à votre espace de simulation</p>
+
+        <form id="authForm">
+            <label>Adresse e-mail</label>
+            <input type="email" id="email" placeholder="Votre e-mail" required>
+
+            <label>Mot de passe</label>
+            <input type="password" id="password" placeholder="Votre mot de passe" minlength="6" required>
+
+            <button type="submit" id="loginBtn">Se connecter</button>
+            <button type="button" id="registerBtn">Créer un compte</button>
+        </form>
+
+        <p id="authMessage"></p>
+    </div>
+</section>
+
+<!-- APPLICATION -->
+<div id="appContent" hidden>
+
 <header>
-    <h1>Simulation du procédé de concentration du jus</h1>
+    <h1>ProcessLab</h1>
     <p>Modélisation et Simulation des Procédés</p>
+    <p id="userEmail"></p>
+    <button type="button" id="logoutBtn">Se déconnecter</button>
 </header>
 
 <main>
@@ -109,6 +135,11 @@
         <p>Les résultats apparaîtront ici après le calcul.</p>
     </section>
 
+    <button type="button" id="saveSimulationBtn">
+        Enregistrer la simulation
+    </button>
+    <p id="saveMessage"></p>
+
     <section class="bilan-section">
         <h2>Vérification des bilans de matière</h2>
 
@@ -149,9 +180,18 @@
         </div>
     </section>
 
-</main>
+    <!-- HISTORIQUE -->
+    <section class="history-section">
+        <h2>Historique de mes simulations</h2>
+        <div id="historyList">
+            <p>Chargement de l'historique...</p>
+        </div>
+    </section>
 
-<script src="./script.js?v=7"></script>
+</main>
+</div>
+
+<script type="module" src="./script.js?v=8"></script>
 
 </body>
 </html>
